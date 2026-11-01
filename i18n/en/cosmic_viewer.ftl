@@ -111,6 +111,12 @@ image-size = Image size:
 image-dpi = Image DPI:
 image-folder = Folder:
 
+# Loading and error messages
+no-image-selected = No image selected
+loading-image = Loading image
+error-loading-image = Error loading image
+image-not-found = Image not found
+
 # Settings
 settings = Settings
 appearance = Appearance

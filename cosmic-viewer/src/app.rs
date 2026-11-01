@@ -389,7 +389,7 @@ impl CosmicViewer {
         let mut content = Column::new().spacing(spacing.space_m);
 
         let Some(path) = self.nav.current() else {
-            return content.push(text::body("No image loaded")).into();
+            return content.push(text::body(fl!("no-image-selected"))).into();
         };
 
         // File name
@@ -1692,9 +1692,20 @@ impl Application for CosmicViewer {
         let content: Element<'_, Self::Message> = if has_image {
             self.viewport.element().map(ViewerMessage::Canvas)
         } else {
+            let message = match self.nav.current() {
+                Some(path)
+                    if self.cache.is_pending(path) || self.cache.get_full(path).is_some() =>
+                {
+                    fl!("loading-image")
+                }
+                Some(path) if !path.exists() => fl!("image-not-found"),
+                // Catch-all generic message when the specific cases above don't match
+                Some(_) => fl!("error-loading-image"),
+                None => fl!("no-image-selected"),
+            };
             Column::new()
                 .push(Space::new().height(Length::Fill))
-                .push(text("No image selected").center())
+                .push(text(message).center())
                 .push(Space::new().height(Length::Fill))
                 .align_x(Horizontal::Center)
                 .width(Length::Fill)
